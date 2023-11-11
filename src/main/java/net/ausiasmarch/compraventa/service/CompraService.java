@@ -13,6 +13,8 @@ import jakarta.transaction.Transactional;
 import net.ausiasmarch.compraventa.entity.CompraEntity;
 import net.ausiasmarch.compraventa.entity.ProductoEntity;
 import net.ausiasmarch.compraventa.entity.UsuarioEntity;
+import net.ausiasmarch.compraventa.exception.InssuficientSaldoException;
+import net.ausiasmarch.compraventa.exception.InssuficientStockException;
 import net.ausiasmarch.compraventa.exception.ResourceNotFoundException;
 import net.ausiasmarch.compraventa.helper.DataGenerationHelper;
 import net.ausiasmarch.compraventa.repository.CompraRepository;
@@ -46,19 +48,29 @@ public class CompraService {
     }
 
     public Long create(CompraEntity oCompraEntity) {
-
+        
         oSesionService.onlyAdminsOrUsers();
         oCompraEntity.setId(null);
-        int cantidadComprada = oCompraEntity.getCantidad();
+        
         ProductoEntity productoComprado = oProductoService.get(oCompraEntity.getProducto().getId());
+        UsuarioEntity usuarioCompra = oUsuarioService.get(oCompraEntity.getUsuario().getId());
+        int cantidadComprada = oCompraEntity.getCantidad();
+        if (cantidadComprada > productoComprado.getStock()) {
+            cantidadComprada = productoComprado.getStock();
+        }
         double precio = productoComprado.getPrecio();
-        UsuarioEntity usuarioCompra = oUsuarioService.get(oCompraEntity.getUsuario().getId());        
+        if ((usuarioCompra.getSaldo()<(precio*cantidadComprada)) || (usuarioCompra.getSaldo() == 0)) {
+            throw new InssuficientSaldoException("No hay suficiente saldo para realizar la compra");
+        } else if (productoComprado.getStock() == 0) {
+            throw new InssuficientStockException("El producto está agotado");
+        } else {
         oUsuarioService.actualizarSaldoUsuario(usuarioCompra, cantidadComprada * precio);
         oProductoService.actualizarStock(productoComprado, cantidadComprada);
 
         CompraEntity oCompraEntityCreada = new CompraEntity(cantidadComprada, cantidadComprada * precio, new Date(System.currentTimeMillis()), usuarioCompra, productoComprado);
  
         return oCompraRepository.save(oCompraEntityCreada).getId();
+        }
     }
 
     public CompraEntity update(CompraEntity oCompraEntity) {
@@ -133,7 +145,6 @@ public class CompraService {
         return oCompraRepository.findAll(oPageable);
     }
 }
-
 
     public Long populate(Integer amount) {
         oSesionService.onlyAdmins();

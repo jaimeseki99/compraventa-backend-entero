@@ -69,12 +69,12 @@ public class UsuarioService {
         for (int i=0; i < amount; i++) {
             String nombre = DataGenerationHelper.getNombreRandom();
             String apellido = DataGenerationHelper.getApellidoRandom();
-            String username = DataGenerationHelper.doNormalizeString(nombre.substring(0,3) + apellido.substring(0,2));
-            String email = nombre + apellido + "@gmail.com";
+            String username = DataGenerationHelper.doNormalizeString(nombre.substring(0,3).toLowerCase() + apellido.substring(0,2).toLowerCase());
+            String email = nombre.toLowerCase() + apellido.toLowerCase();
             String direccion = DataGenerationHelper.generarDireccionRandom();
             String telefono = DataGenerationHelper.generarNumeroTelefono();
             double saldo = DataGenerationHelper.generarDobleRandom();
-          oUsuarioRepository.save(new UsuarioEntity(nombre, apellido, username, email, direccion, telefono, saldo ,"2868b648dcccb43788cc6c29df16bf3c899151d035892c3988b53fefbede53f7", true));
+          oUsuarioRepository.save(new UsuarioEntity(nombre, apellido, username, email + "@gmail.com", direccion, telefono, saldo ,"2868b648dcccb43788cc6c29df16bf3c899151d035892c3988b53fefbede53f7", true));
         }
         return oUsuarioRepository.count();
     }

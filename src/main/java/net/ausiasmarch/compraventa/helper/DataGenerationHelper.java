@@ -83,10 +83,11 @@ public class DataGenerationHelper {
         StringBuilder nuevaCalle = new StringBuilder();
 
         nuevaCalle.append(getTipoCalleRandom());
-        nuevaCalle.append("");
+        nuevaCalle.append(" ");
         nuevaCalle.append(getNombreCalleRandom());
+        nuevaCalle.append(" ");
         nuevaCalle.append(random.nextInt(150));
-        nuevaCalle.append(",");
+        nuevaCalle.append(", ");
         nuevaCalle.append(getCiudadRandom());
         
         return nuevaCalle.toString();
@@ -114,7 +115,7 @@ public class DataGenerationHelper {
     public static String generarProductoRandom() {
         StringBuilder nuevoProducto = new StringBuilder();
         nuevoProducto.append(getNombreProductoRandom());
-        nuevoProducto.append("");
+        nuevoProducto.append(" ");
         nuevoProducto.append(getMarcaRandom());
 
         return nuevoProducto.toString();
@@ -126,9 +127,9 @@ public class DataGenerationHelper {
 
     public static String generarDescripcion() {
         StringBuilder descripcion = new StringBuilder();
-        descripcion.append("Producto :");
+        descripcion.append("Producto ");
         for (int i=0; i<3; i++) {
-            descripcion.append(getPalabraDescripcion()).append(",");
+            descripcion.append(getPalabraDescripcion()).append(", ");
         }
         descripcion.append(" y ").append(getPalabraDescripcion()).append(".");
         return descripcion.toString();
