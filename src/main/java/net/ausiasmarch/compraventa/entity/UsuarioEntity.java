@@ -49,7 +49,7 @@ public class UsuarioEntity {
 
     @Pattern(regexp = "^[0-9a-fA-F]{64}$", message = "La contraseña debe tener formato hexadecimal")
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    private String contrasenya = "2868b648dcccb43788cc6c29df16bf3c899151d035892c3988b53fefbede53f7";
+    private String contrasenya = "88dc10643ea6bde90909b45b01fcfd1bf6d96a0298d2b0a86f65b55192cae99b";
 
     @NotNull(message = "Tienes que especificar el rol")
     private Boolean rol = false;

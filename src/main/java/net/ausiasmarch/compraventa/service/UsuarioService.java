@@ -34,7 +34,7 @@ public class UsuarioService {
    public Long create (UsuarioEntity oUsuarioEntity) {
        oSesionService.onlyAdmins();
        oUsuarioEntity.setId(null);
-       oUsuarioEntity.setContrasenya("2868b648dcccb43788cc6c29df16bf3c899151d035892c3988b53fefbede53f7");
+       oUsuarioEntity.setContrasenya("88dc10643ea6bde90909b45b01fcfd1bf6d96a0298d2b0a86f65b55192cae99b");
        return oUsuarioRepository.save(oUsuarioEntity).getId();
     }
 
@@ -44,11 +44,11 @@ public class UsuarioService {
         if (oSesionService.isUser()) {
             oUsuarioEntity.setId(null);
             oUsuarioEntity.setRol(oUsuarioEntityBaseDatos.getRol());
-            oUsuarioEntity.setContrasenya("2868b648dcccb43788cc6c29df16bf3c899151d035892c3988b53fefbede53f7");
+            oUsuarioEntity.setContrasenya("88dc10643ea6bde90909b45b01fcfd1bf6d96a0298d2b0a86f65b55192cae99b");
             return oUsuarioRepository.save(oUsuarioEntity);
         } else {
             oUsuarioEntity.setId(null);
-            oUsuarioEntity.setContrasenya("2868b648dcccb43788cc6c29df16bf3c899151d035892c3988b53fefbede53f7");
+            oUsuarioEntity.setContrasenya("88dc10643ea6bde90909b45b01fcfd1bf6d96a0298d2b0a86f65b55192cae99b");
             return oUsuarioRepository.save(oUsuarioEntity);
         }
     }
@@ -74,7 +74,7 @@ public class UsuarioService {
             String direccion = DataGenerationHelper.generarDireccionRandom();
             String telefono = DataGenerationHelper.generarNumeroTelefono();
             double saldo = DataGenerationHelper.generarDobleRandom();
-          oUsuarioRepository.save(new UsuarioEntity(nombre, apellido, username, email + "@gmail.com", direccion, telefono, saldo ,"2868b648dcccb43788cc6c29df16bf3c899151d035892c3988b53fefbede53f7", true));
+          oUsuarioRepository.save(new UsuarioEntity(nombre, apellido, username, email + "@gmail.com", direccion, telefono, saldo ,"88dc10643ea6bde90909b45b01fcfd1bf6d96a0298d2b0a86f65b55192cae99b", true));
         }
         return oUsuarioRepository.count();
     }
@@ -90,9 +90,9 @@ public class UsuarioService {
         oSesionService.onlyAdmins();
         oUsuarioRepository.deleteAll();
         oUsuarioRepository.resetAutoIncrement();
-        UsuarioEntity oUsuarioEntity1 = new UsuarioEntity(1L, "Jaime", "Serrano", "jaimeseki99", "jaime99sq@gmail.com", "C/La Senyera, 24", "601148404", 1000000.00, "2868b648dcccb43788cc6c29df16bf3c899151d035892c3988b53fefbede53f7", false);
+        UsuarioEntity oUsuarioEntity1 = new UsuarioEntity(1L, "Jaime", "Serrano", "jaimeseki99", "jaime99sq@gmail.com", "C/La Senyera, 24", "601148404", 1000000.00, "88dc10643ea6bde90909b45b01fcfd1bf6d96a0298d2b0a86f65b55192cae99b", false);
         oUsuarioRepository.save(oUsuarioEntity1);
-        oUsuarioEntity1 = new UsuarioEntity(2L, "Joan", "Serrano", "joaseki", "joaserqu93@hotmail.com", "C/ La Plata, 54", "693797773", 1000000.00, "2868b648dcccb43788cc6c29df16bf3c899151d035892c3988b53fefbede53f7",true);
+        oUsuarioEntity1 = new UsuarioEntity(2L, "Joan", "Serrano", "joaseki", "joaserqu93@hotmail.com", "C/ La Plata, 54", "693797773", 1000000.00, "88dc10643ea6bde90909b45b01fcfd1bf6d96a0298d2b0a86f65b55192cae99b",true);
         oUsuarioRepository.save(oUsuarioEntity1);
         return oUsuarioRepository.count();
     }
