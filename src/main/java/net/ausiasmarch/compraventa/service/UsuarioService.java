@@ -31,8 +31,12 @@ public class UsuarioService {
         return oUsuarioRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado"));
     }
 
+    public UsuarioEntity getByUsername(String username){
+        return oUsuarioRepository.findByUsername(username).orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado"));
+    }
+
    public Long create (UsuarioEntity oUsuarioEntity) {
-       oSesionService.onlyAdmins();
+       //oSesionService.onlyAdmins();
        oUsuarioEntity.setId(null);
        oUsuarioEntity.setContrasenya("88dc10643ea6bde90909b45b01fcfd1bf6d96a0298d2b0a86f65b55192cae99b");
        return oUsuarioRepository.save(oUsuarioEntity).getId();
@@ -40,7 +44,7 @@ public class UsuarioService {
 
     public UsuarioEntity update(UsuarioEntity oUsuarioEntity) {
         UsuarioEntity oUsuarioEntityBaseDatos = this.get(oUsuarioEntity.getId());
-        oSesionService.onlyAdminsOrUsersWithIisOwnData(oUsuarioEntityBaseDatos.getId());
+        //oSesionService.onlyAdminsOrUsersWithIisOwnData(oUsuarioEntityBaseDatos.getId());
         if (oSesionService.isUser()) {
             oUsuarioEntity.setId(null);
             oUsuarioEntity.setRol(oUsuarioEntityBaseDatos.getRol());
@@ -60,7 +64,7 @@ public class UsuarioService {
     }
 
     public Page<UsuarioEntity> getPage(Pageable oPageable) {
-        oSesionService.onlyAdmins();
+        //oSesionService.onlyAdmins();
         return oUsuarioRepository.findAll(oPageable);
     }
 
@@ -87,7 +91,7 @@ public class UsuarioService {
 
     @Transactional
     public Long empty() {
-        oSesionService.onlyAdmins();
+        //oSesionService.onlyAdmins();
         oUsuarioRepository.deleteAll();
         oUsuarioRepository.resetAutoIncrement();
         UsuarioEntity oUsuarioEntity1 = new UsuarioEntity(1L, "Jaime", "Serrano", "jaimeseki99", "jaime99sq@gmail.com", "C/La Senyera, 24", "601148404", 1000000.00, "88dc10643ea6bde90909b45b01fcfd1bf6d96a0298d2b0a86f65b55192cae99b", false);

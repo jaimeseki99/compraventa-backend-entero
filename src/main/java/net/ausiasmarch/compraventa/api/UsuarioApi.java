@@ -31,6 +31,11 @@ public class UsuarioApi {
         return ResponseEntity.ok(oUsuarioService.get(id));
     }
 
+    @GetMapping("/username/{username}")
+    public ResponseEntity<UsuarioEntity> getByUsername(@PathVariable("username") String username) {
+        return ResponseEntity.ok(oUsuarioService.getByUsername(username));
+    }
+
     @PostMapping("") 
     public ResponseEntity<Long> create(@RequestBody UsuarioEntity oUsuarioEntity) {
         return ResponseEntity.ok(oUsuarioService.create(oUsuarioEntity));

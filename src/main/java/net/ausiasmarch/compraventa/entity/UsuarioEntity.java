@@ -2,6 +2,7 @@ package net.ausiasmarch.compraventa.entity;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jakarta.persistence.Entity;
@@ -54,6 +55,7 @@ public class UsuarioEntity {
     @NotNull(message = "Tienes que especificar el rol")
     private Boolean rol = false;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "usuario", fetch = jakarta.persistence.FetchType.LAZY)
     private List<CompraEntity> compras;
 
