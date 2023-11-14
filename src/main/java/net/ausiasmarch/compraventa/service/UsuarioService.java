@@ -58,7 +58,7 @@ public class UsuarioService {
     }
 
     public Long delete(Long id) {
-        oSesionService.onlyAdmins();
+        //oSesionService.onlyAdmins();
         oUsuarioRepository.deleteById(id);
         return id;
     }
@@ -69,7 +69,7 @@ public class UsuarioService {
     }
 
     public Long populate(Integer amount) {
-        oSesionService.onlyAdmins();
+        //oSesionService.onlyAdmins();
         for (int i=0; i < amount; i++) {
             String nombre = DataGenerationHelper.getNombreRandom();
             String apellido = DataGenerationHelper.getApellidoRandom();
