@@ -30,29 +30,29 @@ public class ProductoService {
     }
 
     public Long create(ProductoEntity oProductoEntity) {
-        oSesionService.onlyAdmins();
+        //oSesionService.onlyAdmins();
         oProductoEntity.setId(null);
         return oProductoRepository.save(oProductoEntity).getId();
     }
 
     public ProductoEntity update(ProductoEntity oProductoEntity) {
-        oSesionService.onlyAdmins();
+        //oSesionService.onlyAdmins();
         return oProductoRepository.save(oProductoEntity);
     }
 
     public Long delete(Long id) {
-        oSesionService.onlyAdmins();
+        //oSesionService.onlyAdmins();
         oProductoRepository.deleteById(id);
         return id;
     }
     
     public Page<ProductoEntity> getPage(Pageable oPageable) {
-        oSesionService.onlyAdminsOrUsers();
+        //oSesionService.onlyAdminsOrUsers();
         return oProductoRepository.findAll(oPageable);
     }
 
     public Long populate(Integer amount) {
-        oSesionService.onlyAdmins();
+        //oSesionService.onlyAdmins();
         for (int i=0; i < amount; i++) {
             String nombre = DataGenerationHelper.generarProductoRandom();
             String categoria = DataGenerationHelper.getCategoriaRandom();
@@ -86,7 +86,7 @@ public class ProductoService {
 
     @Transactional
     public Long empty() {
-        oSesionService.onlyAdmins();
+       // oSesionService.onlyAdmins();
         oProductoRepository.deleteAll();
         oProductoRepository.resetAutoIncrement();
         oProductoRepository.flush();

@@ -1,5 +1,6 @@
 package net.ausiasmarch.compraventa.entity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.persistence.Entity;
@@ -81,7 +82,7 @@ public class ProductoEntity {
     private List<CompraEntity> compras;
 
     public ProductoEntity() {
-
+        compras = new ArrayList<>();
     }
 
      public ProductoEntity(Long id, String nombre, String categoria, int stock, double precio, String descripcion) {

@@ -1,5 +1,6 @@
 package net.ausiasmarch.compraventa.entity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -60,7 +61,7 @@ public class UsuarioEntity {
     private List<CompraEntity> compras;
 
     public UsuarioEntity() {
-
+        compras = new ArrayList<>();
     }
 
     public UsuarioEntity(Long id, String nombre, String apellido, String username, String email, String direccion, String telefono, double saldo, String contrasenya, Boolean rol) {
@@ -87,6 +88,8 @@ public class UsuarioEntity {
         this.contrasenya = contrasenya;
         this.rol = rol;
     }
+
+ 
 
     public UsuarioEntity(String username, String contrasenya) {
         this.username = username;

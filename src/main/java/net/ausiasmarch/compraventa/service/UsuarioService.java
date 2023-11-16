@@ -45,16 +45,10 @@ public class UsuarioService {
     public UsuarioEntity update(UsuarioEntity oUsuarioEntity) {
         UsuarioEntity oUsuarioEntityBaseDatos = this.get(oUsuarioEntity.getId());
         //oSesionService.onlyAdminsOrUsersWithIisOwnData(oUsuarioEntityBaseDatos.getId());
-        if (oSesionService.isUser()) {
-            oUsuarioEntity.setId(null);
+            //oUsuarioEntity.setId(null);
             oUsuarioEntity.setRol(oUsuarioEntityBaseDatos.getRol());
             oUsuarioEntity.setContrasenya("88dc10643ea6bde90909b45b01fcfd1bf6d96a0298d2b0a86f65b55192cae99b");
             return oUsuarioRepository.save(oUsuarioEntity);
-        } else {
-            oUsuarioEntity.setId(null);
-            oUsuarioEntity.setContrasenya("88dc10643ea6bde90909b45b01fcfd1bf6d96a0298d2b0a86f65b55192cae99b");
-            return oUsuarioRepository.save(oUsuarioEntity);
-        }
     }
 
     public Long delete(Long id) {
