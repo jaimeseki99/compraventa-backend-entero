@@ -56,7 +56,7 @@ public class UsuarioEntity {
     @NotNull(message = "Tienes que especificar el rol")
     private Boolean rol = false;
 
-    
+
     @OneToMany(mappedBy = "usuario", fetch = jakarta.persistence.FetchType.LAZY)
     private List<CompraEntity> compras;
 

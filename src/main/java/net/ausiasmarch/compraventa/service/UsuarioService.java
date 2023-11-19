@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.servlet.mvc.method.annotation.DeferredResultMethodReturnValueHandler;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
@@ -36,7 +37,7 @@ public class UsuarioService {
     }
 
    public Long create (UsuarioEntity oUsuarioEntity) {
-       //oSesionService.onlyAdmins();
+      // oSesionService.onlyAdmins();
        oUsuarioEntity.setId(null);
        oUsuarioEntity.setContrasenya("88dc10643ea6bde90909b45b01fcfd1bf6d96a0298d2b0a86f65b55192cae99b");
        return oUsuarioRepository.save(oUsuarioEntity).getId();
@@ -44,7 +45,7 @@ public class UsuarioService {
 
     public UsuarioEntity update(UsuarioEntity oUsuarioEntity) {
         UsuarioEntity oUsuarioEntityBaseDatos = this.get(oUsuarioEntity.getId());
-        //oSesionService.onlyAdminsOrUsersWithIisOwnData(oUsuarioEntityBaseDatos.getId());
+        // oSesionService.onlyAdminsOrUsersWithIisOwnData(oUsuarioEntityBaseDatos.getId());
             //oUsuarioEntity.setId(null);
             oUsuarioEntity.setRol(oUsuarioEntityBaseDatos.getRol());
             oUsuarioEntity.setContrasenya("88dc10643ea6bde90909b45b01fcfd1bf6d96a0298d2b0a86f65b55192cae99b");
@@ -52,13 +53,13 @@ public class UsuarioService {
     }
 
     public Long delete(Long id) {
-        //oSesionService.onlyAdmins();
+        // oSesionService.onlyAdmins();
         oUsuarioRepository.deleteById(id);
         return id;
     }
 
     public Page<UsuarioEntity> getPage(Pageable oPageable) {
-        //oSesionService.onlyAdmins();
+       // oSesionService.onlyAdminsOrUsers();
         return oUsuarioRepository.findAll(oPageable);
     }
 
@@ -68,7 +69,7 @@ public class UsuarioService {
             String nombre = DataGenerationHelper.getNombreRandom();
             String apellido = DataGenerationHelper.getApellidoRandom();
             String username = DataGenerationHelper.doNormalizeString(nombre.substring(0,3).toLowerCase() + apellido.substring(0,2).toLowerCase());
-            String email = nombre.toLowerCase() + apellido.toLowerCase();
+            String email = DataGenerationHelper.doNormalizeString(nombre.toLowerCase() + apellido.toLowerCase()); 
             String direccion = DataGenerationHelper.generarDireccionRandom();
             String telefono = DataGenerationHelper.generarNumeroTelefono();
             double saldo = DataGenerationHelper.generarDobleRandom();
@@ -78,14 +79,14 @@ public class UsuarioService {
     }
 
     public UsuarioEntity getOneRandom() {
-        oSesionService.onlyAdmins();
+       // oSesionService.onlyAdmins();
         Pageable oPageable = PageRequest.of((int) (Math.random() * oUsuarioRepository.count()), 1);
         return oUsuarioRepository.findAll(oPageable).getContent().get(0);
     }
 
     @Transactional
     public Long empty() {
-        //oSesionService.onlyAdmins();
+        // oSesionService.onlyAdmins();
         oUsuarioRepository.deleteAll();
         oUsuarioRepository.resetAutoIncrement();
         UsuarioEntity oUsuarioEntity1 = new UsuarioEntity(1L, "Jaime", "Serrano", "jaimeseki99", "jaime99sq@gmail.com", "C/La Senyera, 24", "601148404", 1000000.00, "88dc10643ea6bde90909b45b01fcfd1bf6d96a0298d2b0a86f65b55192cae99b", false);

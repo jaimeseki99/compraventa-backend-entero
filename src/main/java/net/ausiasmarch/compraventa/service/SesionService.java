@@ -23,7 +23,7 @@ public class SesionService {
     public String login(UsuarioBean oUsuarioBean) {
         oUsuarioRepository.findByUsernameAndContrasenya(oUsuarioBean.getUsername(), oUsuarioBean.getContrasenya())
             .orElseThrow(() -> new ResourceNotFoundException("Usuario y/o contraseña incorrecto(s)"));
-        return JWTHelper.generateJWT(oUsuarioBean.getUsername());
+        return JWTHelper.generateJWT(oUsuarioBean.getUsername(), oUsuarioBean.isRol());
     }
 
     public String getSesionUsername() {

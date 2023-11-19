@@ -9,6 +9,7 @@ public class UsuarioBean {
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String contrasenya;
 
+    private boolean rol;
 
     public String getUsername() {
         return username;
@@ -25,5 +26,13 @@ public class UsuarioBean {
     public void setContrasenya(String contrasenya) {
         this.contrasenya = contrasenya;
     }    
+
+    public boolean isRol() {
+        return rol;
+    }
+
+    public void setRol(boolean rol) {
+        this.rol = rol;
+    }
 
 }

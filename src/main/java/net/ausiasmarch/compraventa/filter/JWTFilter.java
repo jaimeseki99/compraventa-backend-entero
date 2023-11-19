@@ -31,24 +31,19 @@ public class JWTFilter implements Filter {
 
         if ("OPTIONS".equals(request.getMethod())) {
             response.setStatus(HttpServletResponse.SC_OK);
-            oFilterChain.doFilter(oServletRequest, oServletResponse);
         } else {
             String auth = request.getHeader("Authorization");
 
-            if ( auth == null || !auth.startsWith("Bearer ")) {
-
-            } else {
+            if(auth != null && auth.startsWith("Bearer ")) {
                 String token = auth.substring(7);
-                try {
-                    String username = JWTHelper.validateJWT(token);
+                String username = JWTHelper.validateJWT(token);
+                if (username != null) {
                     request.setAttribute("username", username);
-                } catch (Exception e) {
-                    throw new ServletException("invalid token");
                 }
             }
-            oFilterChain.doFilter(oServletRequest, oServletResponse);
-        }
 
+        }
+        oFilterChain.doFilter(oServletRequest, oServletResponse);
     }
 
     @Override

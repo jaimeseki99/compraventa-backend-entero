@@ -2,6 +2,7 @@ package net.ausiasmarch.compraventa.service;
 
 import java.sql.Date;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,7 +50,7 @@ public class CompraService {
 
     public Long create(CompraEntity oCompraEntity) {
         
-        oSesionService.onlyAdminsOrUsers();
+        //oSesionService.onlyAdminsOrUsers();
         oCompraEntity.setId(null);
         
         ProductoEntity productoComprado = oProductoService.get(oCompraEntity.getProducto().getId());
@@ -67,7 +68,7 @@ public class CompraService {
         oUsuarioService.actualizarSaldoUsuario(usuarioCompra, cantidadComprada * precio);
         oProductoService.actualizarStock(productoComprado, cantidadComprada);
 
-        CompraEntity oCompraEntityCreada = new CompraEntity(cantidadComprada, cantidadComprada * precio, new Date(System.currentTimeMillis()), usuarioCompra, productoComprado);
+        CompraEntity oCompraEntityCreada = new CompraEntity(cantidadComprada, cantidadComprada * precio, LocalDateTime.now(), usuarioCompra, productoComprado);
  
         return oCompraRepository.save(oCompraEntityCreada).getId();
         }
@@ -76,7 +77,7 @@ public class CompraService {
     public CompraEntity update(CompraEntity oCompraEntity) {
 
         CompraEntity oCompraEntityBaseDatos = this.get(oCompraEntity.getId());
-        oSesionService.onlyAdminsOrUsersWithIisOwnData(oCompraEntityBaseDatos.getUsuario().getId());
+        //oSesionService.onlyAdminsOrUsersWithIisOwnData(oCompraEntityBaseDatos.getUsuario().getId());
         
         ProductoEntity productoComprado = oProductoService.get(oCompraEntity.getProducto().getId());
         UsuarioEntity usuario;
@@ -110,7 +111,7 @@ public class CompraService {
     public Long delete(Long id) {
 
         CompraEntity oCompraCancelada = this.get(id);
-        oSesionService.onlyAdminsOrUsersWithIisOwnData(oCompraCancelada.getUsuario().getId());
+        //oSesionService.onlyAdminsOrUsersWithIisOwnData(oCompraCancelada.getUsuario().getId());
 
         if (oCompraCancelada != null) {
             int cantidadVendida = oCompraCancelada.getCantidad();
@@ -134,31 +135,35 @@ public class CompraService {
     }
 
     public Page<CompraEntity> getPage(Pageable oPageable, Long id_usuario, Long id_producto) {
-        oSesionService.onlyAdminsOrUsers();
-    if (id_usuario!= 0 && id_producto != 0) {
-        return oCompraRepository.findByUsuarioIdAndProductoId(id_usuario, id_producto, oPageable);
-    } else if (id_usuario != 0) {
-        return oCompraRepository.findByUsuarioId(id_usuario, oPageable);
-    } else if (id_producto != 0) {
-        return oCompraRepository.findByProductoId(id_producto, oPageable);
+        //oSesionService.onlyAdminsOrUsers();
+    if (id_usuario == 0) {
+        if (id_producto == 0) {
+            return oCompraRepository.findAll(oPageable);
+        } else {
+            return oCompraRepository.findByProductoId(id_producto, oPageable);
+        }
     } else {
-        return oCompraRepository.findAll(oPageable);
+        if (id_producto == 0) {
+            return oCompraRepository.findByUsuarioId(id_usuario, oPageable);
+        } else {
+            return oCompraRepository.findByUsuarioIdAndProductoId(id_usuario, id_producto, oPageable);
+        }
     }
 }
 
     public Long populate(Integer amount) {
-        oSesionService.onlyAdmins();
+        //oSesionService.onlyAdmins();
         for (int i = 0; i < amount; i++) {
             int cantidad = DataGenerationHelper.generarIntRandom();
             double coste = DataGenerationHelper.generarDobleRandom();
-            oCompraRepository.save(new CompraEntity(cantidad, coste, new Date(System.currentTimeMillis()), oUsuarioService.getOneRandom(), oProductoService.getOneRandom()));
+            oCompraRepository.save(new CompraEntity(cantidad, coste, DataGenerationHelper.getFechaRandom(), oUsuarioService.getOneRandom(), oProductoService.getOneRandom()));
         }
         return oCompraRepository.count();
     }
 
     @Transactional
     public Long empty() {
-        oSesionService.onlyAdmins();
+        //oSesionService.onlyAdmins();
         oCompraRepository.deleteAll();
         oCompraRepository.resetAutoIncrement();
         oCompraRepository.flush();

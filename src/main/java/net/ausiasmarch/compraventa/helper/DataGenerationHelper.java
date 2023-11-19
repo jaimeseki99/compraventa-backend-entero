@@ -1,6 +1,9 @@
 package net.ausiasmarch.compraventa.helper;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class DataGenerationHelper {
 
@@ -38,7 +41,7 @@ public class DataGenerationHelper {
     }
 
     public static String getApellidoRandom() {
-        return apellidos[(int) (Math.random() * nombres.length)];
+        return apellidos[(int) (Math.random() * apellidos.length)];
     }
 
     public static String doNormalizeString(String cadena) {
@@ -95,12 +98,12 @@ public class DataGenerationHelper {
 
     public static double generarDobleRandom() {
         Random random = new Random();
-        return random.nextDouble(100000);
+        return random.nextDouble(1000);
     }
 
     public static int generarIntRandom() {
         Random random = new Random();
-        return random.nextInt(10000);
+        return random.nextInt(1000);
     }
 
    
@@ -137,6 +140,19 @@ public class DataGenerationHelper {
 
     public static String getCategoriaRandom() {
         return categorias[(int) (Math.random() * categorias.length)];
+    }
+
+    public static int getRandomInt(int min, int max) {
+        Random random = new Random();
+        int numeroRandom = random.nextInt((max - min) + 1) + min;
+        return numeroRandom;
+    }
+
+    public static LocalDateTime getFechaRandom() {
+        long diaMinimo = LocalDate.of(2020, 1, 1).toEpochDay();
+        long diaMaximo = LocalDate.of(2023, 11, 1).toEpochDay();
+        long diaRandom = ThreadLocalRandom.current().nextLong(diaMinimo, diaMaximo);
+        return LocalDate.ofEpochDay(diaRandom).atTime(getRandomInt(0, 23), getRandomInt(0, 59), getRandomInt(0, 59));
     }
 
 }

@@ -1,6 +1,9 @@
 package net.ausiasmarch.compraventa.entity;
 
 import java.sql.Date;
+import java.time.LocalDateTime;
+
+import org.springframework.cglib.core.Local;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
@@ -30,8 +33,8 @@ public class CompraEntity {
 
     private double coste;
 
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    private Date fecha;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+    private LocalDateTime fecha;
 
     @NotNull(message = "El usuario que realiza la compra no puede estar vacío")
     @ManyToOne
@@ -67,14 +70,6 @@ public class CompraEntity {
         this.coste = coste;
     }
 
-    public Date getFecha() {
-        return fecha;
-    }
-
-    public void setFecha(Date fecha) {
-        this.fecha = fecha;
-    }
-
     public UsuarioEntity getUsuario() {
         return usuario;
     }
@@ -95,20 +90,20 @@ public class CompraEntity {
         
     }
 
-    public CompraEntity(int cantidad, double coste, Date fecha) {
+    public CompraEntity(int cantidad, double coste) {
         this.cantidad = cantidad;
         this.coste = coste;
-        this.fecha = fecha;
+        this.fecha = LocalDateTime.now();
     }
 
-    public CompraEntity(Long id, int cantidad, double coste, Date fecha) {
+    public CompraEntity(Long id, int cantidad, double coste) {
         this.id = id;
         this.cantidad = cantidad;
         this.coste = coste;
-        this.fecha = fecha;
+        this.fecha = LocalDateTime.now();
     }
 
-    public CompraEntity(int cantidad, double coste, Date fecha, UsuarioEntity usuario, ProductoEntity producto) {
+    public CompraEntity(int cantidad, double coste, LocalDateTime fecha, UsuarioEntity usuario, ProductoEntity producto) {
         this.cantidad = cantidad;
         this.coste = coste;
         this.fecha = fecha;

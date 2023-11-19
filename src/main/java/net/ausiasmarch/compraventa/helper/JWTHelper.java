@@ -23,7 +23,7 @@ public class JWTHelper {
         return Keys.hmacShaKeyFor((SECRET + ISSUER + SECRET).getBytes());
     }
 
-    public static String generateJWT(String username) {
+    public static String generateJWT(String username, boolean rol) {
 
         Date currentTime = Date.from(Instant.now());
         Date expiryTime = Date.from(Instant.now().plus(Duration.ofSeconds(1500)));
@@ -34,27 +34,38 @@ public class JWTHelper {
                 .setIssuedAt(currentTime)
                 .setExpiration(expiryTime)
                 .claim("nombre", username)
+                .claim("admin", rol)
                 .signWith(secretKey())
                 .compact();
     }
 
     public static String validateJWT(String strJWT) {
-        Jws<Claims> headerClaimsJwt = Jwts.parserBuilder()
-                .setSigningKey(secretKey())
-                .build()
-                .parseClaimsJws(strJWT);
+        try {
+                Jws<Claims> headerClaimsJwt = Jwts.parserBuilder()
+                    .setSigningKey(secretKey())
+                    .build()
+                    .parseClaimsJws(strJWT);
 
-        Claims claims = headerClaimsJwt.getBody();
+                Claims claims = headerClaimsJwt.getBody();
 
-        if (claims.getExpiration().before(new Date())) {
-            throw new JWTException("Error validating JWT: token expired");
+                if (claims.getExpiration().before(new Date())) {
+                    return null;
+                    // throw new JWTException("Error validating JWT: token expired");
+                }
+
+                if (!claims.getIssuer().equals(ISSUER)) {
+                    return null;
+                    // throw new JWTException("Error validating JWT: wrong issuer");
+                }
+
+                 boolean isAdmin = claims.get("admin", Boolean.class);
+
+                return claims.get("name", String.class);
+        } catch (Exception e) {
+            return null;
         }
+        
 
-        if (!claims.getIssuer().equals(ISSUER)) {
-            throw new JWTException("Error validating JWT: wrong issuer");
-        }
-
-        return claims.get("name", String.class);
     }
 
     
