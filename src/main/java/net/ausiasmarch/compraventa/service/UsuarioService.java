@@ -37,7 +37,7 @@ public class UsuarioService {
     }
 
    public Long create (UsuarioEntity oUsuarioEntity) {
-      // oSesionService.onlyAdmins();
+       oSesionService.onlyAdmins();
        oUsuarioEntity.setId(null);
        oUsuarioEntity.setContrasenya("88dc10643ea6bde90909b45b01fcfd1bf6d96a0298d2b0a86f65b55192cae99b");
        return oUsuarioRepository.save(oUsuarioEntity).getId();
@@ -45,7 +45,7 @@ public class UsuarioService {
 
     public UsuarioEntity update(UsuarioEntity oUsuarioEntity) {
         UsuarioEntity oUsuarioEntityBaseDatos = this.get(oUsuarioEntity.getId());
-        // oSesionService.onlyAdminsOrUsersWithIisOwnData(oUsuarioEntityBaseDatos.getId());
+         oSesionService.onlyAdminsOrUsersWithIisOwnData(oUsuarioEntityBaseDatos.getId());
             //oUsuarioEntity.setId(null);
             oUsuarioEntity.setRol(oUsuarioEntityBaseDatos.getRol());
             oUsuarioEntity.setContrasenya("88dc10643ea6bde90909b45b01fcfd1bf6d96a0298d2b0a86f65b55192cae99b");
@@ -53,18 +53,22 @@ public class UsuarioService {
     }
 
     public Long delete(Long id) {
-        // oSesionService.onlyAdmins();
+         oSesionService.onlyAdmins();
         oUsuarioRepository.deleteById(id);
         return id;
     }
 
     public Page<UsuarioEntity> getPage(Pageable oPageable) {
-       // oSesionService.onlyAdminsOrUsers();
+        oSesionService.onlyAdminsOrUsers();
         return oUsuarioRepository.findAll(oPageable);
     }
 
+    public Page<UsuarioEntity> getPageByComprasDesc(Pageable oPageable) {
+        return oUsuarioRepository.findUsuariosConMasCompras(oPageable);
+    }
+
     public Long populate(Integer amount) {
-        //oSesionService.onlyAdmins();
+        oSesionService.onlyAdmins();
         for (int i=0; i < amount; i++) {
             String nombre = DataGenerationHelper.getNombreRandom();
             String apellido = DataGenerationHelper.getApellidoRandom();
@@ -79,14 +83,14 @@ public class UsuarioService {
     }
 
     public UsuarioEntity getOneRandom() {
-       // oSesionService.onlyAdmins();
+        oSesionService.onlyAdmins();
         Pageable oPageable = PageRequest.of((int) (Math.random() * oUsuarioRepository.count()), 1);
         return oUsuarioRepository.findAll(oPageable).getContent().get(0);
     }
 
     @Transactional
     public Long empty() {
-        // oSesionService.onlyAdmins();
+        oSesionService.onlyAdmins();
         oUsuarioRepository.deleteAll();
         oUsuarioRepository.resetAutoIncrement();
         UsuarioEntity oUsuarioEntity1 = new UsuarioEntity(1L, "Jaime", "Serrano", "jaimeseki99", "jaime99sq@gmail.com", "C/La Senyera, 24", "601148404", 1000000.00, "88dc10643ea6bde90909b45b01fcfd1bf6d96a0298d2b0a86f65b55192cae99b", false);

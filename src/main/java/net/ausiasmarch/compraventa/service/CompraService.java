@@ -50,7 +50,7 @@ public class CompraService {
 
     public Long create(CompraEntity oCompraEntity) {
         
-        //oSesionService.onlyAdminsOrUsers();
+        oSesionService.onlyAdminsOrUsersWithIisOwnData(oCompraEntity.getUsuario().getId());
         oCompraEntity.setId(null);
         
         ProductoEntity productoComprado = oProductoService.get(oCompraEntity.getProducto().getId());
@@ -77,7 +77,7 @@ public class CompraService {
     public CompraEntity update(CompraEntity oCompraEntity) {
 
         CompraEntity oCompraEntityBaseDatos = this.get(oCompraEntity.getId());
-        //oSesionService.onlyAdminsOrUsersWithIisOwnData(oCompraEntityBaseDatos.getUsuario().getId());
+        oSesionService.onlyAdminsOrUsersWithIisOwnData(oCompraEntityBaseDatos.getUsuario().getId());
         
         ProductoEntity productoComprado = oProductoService.get(oCompraEntity.getProducto().getId());
         UsuarioEntity usuario;
@@ -111,7 +111,7 @@ public class CompraService {
     public Long delete(Long id) {
 
         CompraEntity oCompraCancelada = this.get(id);
-        //oSesionService.onlyAdminsOrUsersWithIisOwnData(oCompraCancelada.getUsuario().getId());
+        oSesionService.onlyAdminsOrUsersWithIisOwnData(oCompraCancelada.getUsuario().getId());
 
         if (oCompraCancelada != null) {
             int cantidadVendida = oCompraCancelada.getCantidad();
@@ -135,7 +135,7 @@ public class CompraService {
     }
 
     public Page<CompraEntity> getPage(Pageable oPageable, Long id_usuario, Long id_producto) {
-        //oSesionService.onlyAdminsOrUsers();
+        oSesionService.onlyAdminsOrUsers();
     if (id_usuario == 0) {
         if (id_producto == 0) {
             return oCompraRepository.findAll(oPageable);
@@ -152,7 +152,7 @@ public class CompraService {
 }
 
     public Long populate(Integer amount) {
-        //oSesionService.onlyAdmins();
+        oSesionService.onlyAdmins();
         for (int i = 0; i < amount; i++) {
             int cantidad = DataGenerationHelper.generarIntRandom();
             double coste = DataGenerationHelper.generarDobleRandom();
@@ -163,7 +163,7 @@ public class CompraService {
 
     @Transactional
     public Long empty() {
-        //oSesionService.onlyAdmins();
+        oSesionService.onlyAdmins();
         oCompraRepository.deleteAll();
         oCompraRepository.resetAutoIncrement();
         oCompraRepository.flush();

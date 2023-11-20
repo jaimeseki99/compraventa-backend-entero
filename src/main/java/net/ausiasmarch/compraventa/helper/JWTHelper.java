@@ -60,7 +60,7 @@ public class JWTHelper {
 
                  boolean isAdmin = claims.get("admin", Boolean.class);
 
-                return claims.get("name", String.class);
+                return claims.get("nombre", String.class);
         } catch (Exception e) {
             return null;
         }

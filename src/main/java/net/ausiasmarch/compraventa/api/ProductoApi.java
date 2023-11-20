@@ -61,4 +61,9 @@ public class ProductoApi {
         return ResponseEntity.ok(oProductoService.empty());
     }
 
+    @GetMapping("/comprasdesc")
+    public ResponseEntity<Page<ProductoEntity>> getPageByComprasDesc(Pageable oPageable) {
+        return ResponseEntity.ok(oProductoService.getPageByComprasDesc(oPageable));
+    }
+
 }

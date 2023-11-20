@@ -66,6 +66,11 @@ public class UsuarioApi {
         return ResponseEntity.ok(oUsuarioService.empty());
     }
 
+    @GetMapping("/comprasdesc")
+    public ResponseEntity<Page<UsuarioEntity>> getPageByComprasDesc(Pageable oPageable) {
+        return ResponseEntity.ok(oUsuarioService.getPageByComprasDesc(oPageable));
+    }
+
 
     
 }
