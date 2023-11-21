@@ -36,7 +36,7 @@ public class UsuarioEntity {
     @NotBlank(message = "El username no puede estar vacío")
     private String username;
 
-    @Email(message = "El email debe tener un formato válido")
+    //@Email(message = "El email debe tener un formato válido")
     private String email;
 
     @NotBlank
