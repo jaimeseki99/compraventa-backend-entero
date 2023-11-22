@@ -49,12 +49,14 @@ public class CompraService {
 
     public Long create(CompraEntity oCompraEntity) {
 
+       // oSesionService.onlyAdminsOrUsersWithIisOwnData(oCompraEntity.getUsuario().getId());
         oSesionService.onlyAdminsOrUsers();
-        // oSesionService.onlyAdminsOrUsersWithIisOwnData(oCompraEntity.getUsuario().getId());
+        
         oCompraEntity.setId(null);
         UsuarioEntity usuarioCompra;
         ProductoEntity productoComprado = oProductoService.get(oCompraEntity.getProducto().getId());
         if (oSesionService.isAdmin()) {
+          //  usuarioCompra = oSesionService.getSesionUsuario();
             usuarioCompra = oUsuarioService.get(oCompraEntity.getUsuario().getId());
         } else {
             usuarioCompra = oSesionService.getSesionUsuario();
