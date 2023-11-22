@@ -101,10 +101,10 @@ public class SesionService {
         if (this.isSessionActive()) {
             if (!this.isAdmin()) {
                 if (!this.isUser()) {
-                    throw new UnauthorizedException("Solo los usuarios y los administradores con sus propios datos pueden hacer esto");
+                    throw new UnauthorizedException("Solo los administradores y los usuarios con sus propios datos pueden hacer esto");
                 } else {
                     if (!this.getSesionUsuario().getId().equals(id_usuario)) {
-                        throw new UnauthorizedException("Solo los usuarios y los administradores con sus propios datos pueden hacer esto");
+                        throw new UnauthorizedException("Solo los administradores y los usuarios con sus propios datos pueden hacer esto");
                     }
                 }
             }

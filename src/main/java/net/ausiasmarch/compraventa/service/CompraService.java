@@ -24,7 +24,7 @@ import net.ausiasmarch.compraventa.repository.UsuarioRepository;
 
 @Service
 public class CompraService {
-    
+
     @Autowired
     CompraRepository oCompraRepository;
 
@@ -43,34 +43,39 @@ public class CompraService {
     @Autowired
     SesionService oSesionService;
 
-
     public CompraEntity get(Long id) {
         return oCompraRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Compra no encontrada"));
     }
 
     public Long create(CompraEntity oCompraEntity) {
-        
-        oSesionService.onlyAdminsOrUsersWithIisOwnData(oCompraEntity.getUsuario().getId());
+
+        oSesionService.onlyAdminsOrUsers();
+        // oSesionService.onlyAdminsOrUsersWithIisOwnData(oCompraEntity.getUsuario().getId());
         oCompraEntity.setId(null);
-        
+        UsuarioEntity usuarioCompra;
         ProductoEntity productoComprado = oProductoService.get(oCompraEntity.getProducto().getId());
-        UsuarioEntity usuarioCompra = oUsuarioService.get(oCompraEntity.getUsuario().getId());
+        if (oSesionService.isAdmin()) {
+            usuarioCompra = oUsuarioService.get(oCompraEntity.getUsuario().getId());
+        } else {
+            usuarioCompra = oSesionService.getSesionUsuario();
+        }
         int cantidadComprada = oCompraEntity.getCantidad();
         if (cantidadComprada > productoComprado.getStock()) {
             cantidadComprada = productoComprado.getStock();
         }
         double precio = productoComprado.getPrecio();
-        if ((usuarioCompra.getSaldo()<(precio*cantidadComprada)) || (usuarioCompra.getSaldo() == 0)) {
+        if ((usuarioCompra.getSaldo() < (precio * cantidadComprada)) || (usuarioCompra.getSaldo() == 0)) {
             throw new InssuficientSaldoException("No hay suficiente saldo para realizar la compra");
         } else if (productoComprado.getStock() == 0) {
             throw new InssuficientStockException("El producto está agotado");
         } else {
-        oUsuarioService.actualizarSaldoUsuario(usuarioCompra, cantidadComprada * precio);
-        oProductoService.actualizarStock(productoComprado, cantidadComprada);
+            oUsuarioService.actualizarSaldoUsuario(usuarioCompra, cantidadComprada * precio);
+            oProductoService.actualizarStock(productoComprado, cantidadComprada);
 
-        CompraEntity oCompraEntityCreada = new CompraEntity(cantidadComprada, cantidadComprada * precio, LocalDateTime.now(), usuarioCompra, productoComprado);
- 
-        return oCompraRepository.save(oCompraEntityCreada).getId();
+            CompraEntity oCompraEntityCreada = new CompraEntity(cantidadComprada, cantidadComprada * precio,
+                    LocalDateTime.now(), usuarioCompra, productoComprado);
+
+            return oCompraRepository.save(oCompraEntityCreada).getId();
         }
     }
 
@@ -78,31 +83,31 @@ public class CompraService {
 
         CompraEntity oCompraEntityBaseDatos = this.get(oCompraEntity.getId());
         oSesionService.onlyAdminsOrUsersWithIisOwnData(oCompraEntityBaseDatos.getUsuario().getId());
-        
+
         ProductoEntity productoComprado = oProductoService.get(oCompraEntity.getProducto().getId());
         UsuarioEntity usuario;
         if (oSesionService.isUser()) {
             usuario = oSesionService.getSesionUsuario();
         } else {
-           usuario = oUsuarioService.get(oCompraEntity.getUsuario().getId());
+            usuario = oUsuarioService.get(oCompraEntity.getUsuario().getId());
         }
         oCompraEntity.setUsuario(usuario);
 
         int cantidadActualizada = oCompraEntity.getCantidad();
         int cantidadOriginal = oCompraEntityBaseDatos.getCantidad();
         int cantidadDiferencia = cantidadActualizada - cantidadOriginal;
-    
+
         double costeTotal = cantidadActualizada * productoComprado.getPrecio();
         oCompraEntity.setCoste(costeTotal);
-        double costeDiferencia = Math.abs(cantidadDiferencia)*productoComprado.getPrecio();
-    
-        if (cantidadDiferencia!=0) {
+        double costeDiferencia = Math.abs(cantidadDiferencia) * productoComprado.getPrecio();
+
+        if (cantidadDiferencia != 0) {
             oProductoService.actualizarStock(productoComprado, cantidadDiferencia);
             if (cantidadDiferencia > 0) {
-                    oUsuarioService.actualizarSaldoUsuario(usuario, costeDiferencia);
-                } else {
-                    oUsuarioService.actualizarSaldoUsuario(usuario, -costeDiferencia);
-                }
+                oUsuarioService.actualizarSaldoUsuario(usuario, costeDiferencia);
+            } else {
+                oUsuarioService.actualizarSaldoUsuario(usuario, -costeDiferencia);
+            }
         }
 
         return oCompraRepository.save(oCompraEntity);
@@ -120,10 +125,7 @@ public class CompraService {
             UsuarioEntity usuarioCompra = oCompraCancelada.getUsuario();
 
             if (productoVendido != null) {
-                int stockActual = productoVendido.getStock();
-                int nuevoStock = stockActual + cantidadVendida;
-                productoVendido.setStock(nuevoStock);
-                oProductoService.update(productoVendido);
+                oProductoService.actualizarStock(productoVendido, -cantidadVendida);
             }
 
             oUsuarioService.actualizarSaldoUsuario(usuarioCompra, -costeCompra);
@@ -136,27 +138,28 @@ public class CompraService {
 
     public Page<CompraEntity> getPage(Pageable oPageable, Long id_usuario, Long id_producto) {
         oSesionService.onlyAdminsOrUsers();
-    if (id_usuario == 0) {
-        if (id_producto == 0) {
-            return oCompraRepository.findAll(oPageable);
+        if (id_usuario == 0) {
+            if (id_producto == 0) {
+                return oCompraRepository.findAll(oPageable);
+            } else {
+                return oCompraRepository.findByProductoId(id_producto, oPageable);
+            }
         } else {
-            return oCompraRepository.findByProductoId(id_producto, oPageable);
-        }
-    } else {
-        if (id_producto == 0) {
-            return oCompraRepository.findByUsuarioId(id_usuario, oPageable);
-        } else {
-            return oCompraRepository.findByUsuarioIdAndProductoId(id_usuario, id_producto, oPageable);
+            if (id_producto == 0) {
+                return oCompraRepository.findByUsuarioId(id_usuario, oPageable);
+            } else {
+                return oCompraRepository.findByUsuarioIdAndProductoId(id_usuario, id_producto, oPageable);
+            }
         }
     }
-}
 
     public Long populate(Integer amount) {
         oSesionService.onlyAdmins();
         for (int i = 0; i < amount; i++) {
             int cantidad = DataGenerationHelper.generarIntRandom();
             double coste = DataGenerationHelper.generarDobleRandom();
-            oCompraRepository.save(new CompraEntity(cantidad, coste, DataGenerationHelper.getFechaRandom(), oUsuarioService.getOneRandom(), oProductoService.getOneRandom()));
+            oCompraRepository.save(new CompraEntity(cantidad, coste, DataGenerationHelper.getFechaRandom(),
+                    oUsuarioService.getOneRandom(), oProductoService.getOneRandom()));
         }
         return oCompraRepository.count();
     }
@@ -169,6 +172,5 @@ public class CompraService {
         oCompraRepository.flush();
         return oCompraRepository.count();
     }
-
 
 }
